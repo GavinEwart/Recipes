@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+    <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}" defer></script>
+    <title>Add New Recipe</title>
+</head>
+<body>
+    <header class="bg-dark text-light p-3 d-flex align-items-center">
+        <div class="container d-flex justify-content-between align-items-center">
+            <h1 class="justify-content-start m-0">Add a New Recipe</h1>
+            <div class="justify-content-end">
+                <button class="btn btn-success mr-2">Back to Recipes</button>
+                <button class="btn btn-danger">Logout</button>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-6 bg-dark text-light p-3">
+                <form action="" method="POST">
+                    <div class="form-group">
+                        <label for="recipe_name">Name: </label>
+                        <input type="text" class="form-control" id="recipe_name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipe_description">Description: </label>
+                        <input type="text" class="form-control" id="recipe_description">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipe_instructions">Instructions: </label>
+                        <input type="text" class="form-control" id="recipe_instructions">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipe_date">Date Cooked/Made: </label>
+                        <input type="date" class="form-control" id="recipe_date">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipe_cook_time">Under 30 minutes?: </label>
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" name="recipe_cook_time" value="yes" id="recipe_cook_time_yes">
+                            <label class="form-check-label" for="recipe_cook_time_yes">Yes</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" name="recipe_cook_time" value="no" id="recipe_cook_time_no">
+                            <label class="form-check-label" for="recipe_cook_time_no">No</label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
