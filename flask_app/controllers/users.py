@@ -1,5 +1,5 @@
 from flask_app import app
-from flask import render_template, redirect, request, session
+from flask import render_template, redirect, request, session, url_for, flash
 from flask_app.models import user # import entire file, rather than class, to avoid circular imports
 # As you add model files add them the the import above
 # This file is the second stop in Flask's thought process, here it looks for a route that matches the request
@@ -11,12 +11,46 @@ from flask_app.models import user # import entire file, rather than class, to av
 # Read Users Controller
 
 @app.route('/')
-def login():
+def welcome_page():
     return render_template('login.html')
+
+@app.route('/login', methods=['POST'])
+def login():
+    if 'email' in request.form and 'password' in request.form:
+        data = {"email": request.form['email'], "password":request.form['password']}
+
+        if user.User.validate_user(data=data):
+            return redirect('/recipes')
+        else:
+            flash("Invalid email/password")
+            return redirect('/')
+    
+    else:
+        flash("Invalid form data")
+        return redirect('/')
+
+@app.route('/register', methods=['POST'])
+def register():
+    user_data = {
+        'first_name': request.form['first_name'],
+        'last_name': request.form['last_name'],
+        'email': request.form['email'],
+        'password': request.form['password']
+    }
+
+    confirm_password = request.form['confirm_password']
+
+    if user.User.validate_user(user_data, confirm_password, user_data):
+        user.User.create_user(user_data, confirm_password)
+        flash("Account Created")
+        return redirect('/')
+    else: 
+        flash("Invalid registration data")
+        return redirect('/')
 
 @app.route('/recipes')
 def homepage():
-    return render_template('welcome_page.html')
+    return render_template('home_page.html')
 
 @app.route('/recipes/new')
 def new_recipe():
