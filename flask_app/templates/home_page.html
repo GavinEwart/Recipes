@@ -15,14 +15,25 @@
         <div class="container d-flex justify-content-between align-items-center">
             <h1 class="justify-content-start m-0">Recipes</h1>
             <div class="justify-content-end">
-                <button class="btn btn-success mr-2">Create</button>
-                <button class="btn btn-danger">Logout</button>
+                <button class="btn btn-success mr-2">
+                    <a href="{{ ('/recipes/new') }}" class="text-light">Create</a>
+                </button>
+                <button class="btn btn-danger">
+                    <a href="{{ ('logout') }}" class="text-light">Logout</a>
+                </button>
             </div>
         </div>
     </header>
     
     <main class="container mt-4">
-        <h2>Welcome, Name</h2>
+        <h2>Welcome, {{ user.first_name }}</h2>
+        {% with messages = get_flashed_messages(category_filter=['recipe']) %}
+            {% if "Successfully added recipe" in messages %}
+                <div class="alert alert-success" role="alert">
+                    Successfully added recipe
+                </div>
+            {% endif %}
+        {% endwith %}
         <p>All posted recipes:</p>
 
         <table class="table table table-striped table-bordered">
@@ -35,12 +46,20 @@
                 </tr>
             </thead>
             <tbody>
+                {% for recipe in recipes %}
                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ recipe.name }}</td>
+                    <td>{{ recipe.under_30 }}</td>
+                    <td>{{ recipe.user_id}}</td>
+                    <td>
+                        <a href="{{ url_for('view_recipe', recipe_id=recipe.id) }}">View</a>
+                        {% if user_in_db.id == recipe.user_id %}
+                            <a href="{{ url_for('edit_recipe', recipe_id=recipe.id) }}">Edit</a>
+                            <a href="{{ url_for('delete_recipe', recipe_id=recipe.id) }}">Delete</a>
+                        {% endif %}
+                    </td>
                 </tr>
+                {% endfor %}
             </tbody>
         </table>
     </main>

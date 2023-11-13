@@ -1,6 +1,10 @@
-from flask_app import app
 from flask import render_template, redirect, request, session, url_for, flash
-from flask_app.models import user # import entire file, rather than class, to avoid circular imports
+from flask_app import app
+from flask_app.models import user  # Import only the User class
+from flask_app.models.recipe import Recipe
+from flask_bcrypt import Bcrypt
+
+bcrypt = Bcrypt(app) # import entire file, rather than class, to avoid circular imports
 # As you add model files add them the the import above
 # This file is the second stop in Flask's thought process, here it looks for a route that matches the request
 
@@ -17,17 +21,23 @@ def welcome_page():
 @app.route('/login', methods=['POST'])
 def login():
     if 'email' in request.form and 'password' in request.form:
-        data = {"email": request.form['email'], "password":request.form['password']}
+        email = request.form['email']
+        password = request.form['password']
 
-        if user.User.validate_user(data=data):
+        user_data = {"email": email, "password": password}
+
+        # Check if user is valid
+        user_in_db = user.User.get_by_email(user_data)
+        if user_in_db and bcrypt.check_password_hash(user_in_db.password, password):
+            # Add user_id to session upon successful login
+            session['user_id'] = user_in_db.id
             return redirect('/recipes')
         else:
-            flash("Invalid email/password")
-            return redirect('/')
-    
+            flash("Invalid email/password", "login")
+            return redirect(url_for('welcome_page'))
     else:
-        flash("Invalid form data")
-        return redirect('/')
+        flash("Invalid form data", "login")
+        return redirect(url_for('welcome_page'))
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -47,22 +57,25 @@ def register():
     else: 
         flash("Invalid registration data")
         return redirect('/')
+    
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/')
 
 @app.route('/recipes')
 def homepage():
-    return render_template('home_page.html')
+    if 'user_id' in session:
+        user_id = session['user_id']
+        user_in_db = user.User.get_by_id(user_id)
 
-@app.route('/recipes/new')
-def new_recipe():
-    return render_template('add_recipe.html')
+        # Fetch all recipes
+        all_recipes = Recipe.get_all_recipes()
 
-@app.route('/recipes/2')
-def view_recipe():
-    return render_template('view_recipe.html')
-
-@app.route('/recipes/edit/4')
-def edit_recipe():
-    return render_template('edit_recipe.html')
+        return render_template('home_page.html', user=user_in_db, recipes=all_recipes)
+    else:
+        flash("Please log in to access this page", "login")
+        return redirect(url_for('welcome_page'))
 # Update Users Controller
 
 
