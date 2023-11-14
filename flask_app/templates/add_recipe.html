@@ -15,8 +15,12 @@
         <div class="container d-flex justify-content-between align-items-center">
             <h1 class="justify-content-start m-0">Add a New Recipe</h1>
             <div class="justify-content-end">
-                <button class="btn btn-success mr-2">Back to Recipes</button>
-                <button class="btn btn-danger">Logout</button>
+                <button class="btn btn-success mr-2">
+                    <a href="{{ ('/recipes') }}" class="text-light">Back to Recipes</a>
+                </button>
+                <button class="btn btn-danger">
+                    <a href="{{ ('logout') }}" class="text-light">Logout</a>
+                </button>
             </div>
         </div>
     </header>

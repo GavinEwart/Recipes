@@ -26,7 +26,7 @@
     </header>
     
     <main class="container mt-4">
-        <h2>Welcome, {{ user.first_name }}</h2>
+        <h2>Welcome, {{ user_in_db.first_name }}</h2>
         {% with messages = get_flashed_messages(category_filter=['recipe']) %}
             {% if "Successfully added recipe" in messages %}
                 <div class="alert alert-success" role="alert">
@@ -49,13 +49,13 @@
                 {% for recipe in recipes %}
                 <tr>
                     <td>{{ recipe.name }}</td>
-                    <td>{{ recipe.under_30 }}</td>
-                    <td>{{ recipe.user_id}}</td>
+                    <td>{{ "Yes" if recipe.under_30 else "No"}}</td>
+                    <td>{{ recipe.made_by_user.first_name}} {{ recipe.made_by_user.last_name }}</td>
                     <td>
-                        <a href="{{ url_for('view_recipe', recipe_id=recipe.id) }}">View</a>
+                        <a href="{{ url_for('view_recipe', recipe_id=recipe.recipes_table_id) }}">View</a>
                         {% if user_in_db.id == recipe.user_id %}
-                            <a href="{{ url_for('edit_recipe', recipe_id=recipe.id) }}">Edit</a>
-                            <a href="{{ url_for('delete_recipe', recipe_id=recipe.id) }}">Delete</a>
+                            <a href="{{ url_for('edit_recipe', recipe_id=recipe.recipes_table_id) }}">Edit</a>
+                            <a href="{{ url_for('delete_recipe', recipe_id=recipe.recipes_table_id) }}">Delete</a>
                         {% endif %}
                     </td>
                 </tr>

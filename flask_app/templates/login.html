@@ -12,6 +12,13 @@
 </head>
 <body>
     <h1 class="mb-5 mx-auto text-center text-purple">Recipe Share</h1>
+    {% with messages = get_flashed_messages(category_filter=['hacker']) %}
+        {% if "You can't hack me" in messages %}
+            <div class="alert alert-danger" role="alert">
+                You can't hack me
+            </div>
+        {% endif %}
+    {% endwith %}
     <main>
         <div class="container">
             <div class="row">

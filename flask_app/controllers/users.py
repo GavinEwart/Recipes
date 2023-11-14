@@ -71,8 +71,7 @@ def homepage():
 
         # Fetch all recipes
         all_recipes = Recipe.get_all_recipes()
-
-        return render_template('home_page.html', user=user_in_db, recipes=all_recipes)
+        return render_template('home_page.html', user_in_db=user_in_db, recipes=all_recipes)
     else:
         flash("Please log in to access this page", "login")
         return redirect(url_for('welcome_page'))

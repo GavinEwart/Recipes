@@ -9,10 +9,10 @@ def new_recipe():
 
 @app.route('/create/recipe', methods=['POST'])
 def create_recipe():
-    if 'users_id' in session:
-        users_id = session['users_id']
+    if 'user_id' in session:  
+        user_id = session['user_id']
         recipe_data = {
-            'users_id': users_id,
+            'user_id': user_id,  
             'name': request.form['recipe_name'],
             'description': request.form['recipe_description'],
             'instructions': request.form['recipe_instructions'],
@@ -30,20 +30,15 @@ def create_recipe():
 @app.route('/recipes/view/<int:recipe_id>')
 def view_recipe(recipe_id):
     # Retrieve the recipe by ID from the database
-    recipe_data = recipe.Recipe.get_recipe_by_id(recipe_id)
-
+    recipe_data = recipe.Recipe.get_recipe_by_user_id(recipe_id)
     # Check if the recipe exists
-    if recipe_data:
-        return render_template('view_recipe.html', recipe=recipe_data)
-    else:
-        flash("Recipe not found", "error")
-        return redirect(url_for('homepage'))
+    return render_template('view_recipe.html', recipe=recipe_data)
     
 # edit recipe
 @app.route('/recipes/edit/<int:recipe_id>', methods=['GET', 'POST'])
 def edit_recipe(recipe_id):
     # Retrieve the recipe by ID from the database
-    recipe_data = recipe.Recipe.get_recipe_by_id(recipe_id)
+    recipe_data = recipe.Recipe.get_recipe_by_user_id(recipe_id)
 
     # Check if the recipe exists
     if not recipe_data:
@@ -63,8 +58,13 @@ def edit_recipe(recipe_id):
         recipe.Recipe.update_recipe(recipe_id, updated_data)
         flash("Recipe updated successfully", "success")
         return redirect(url_for('homepage'))
-
-    return render_template('edit_recipe.html', recipe=recipe_data)
+    
+    if session['user_id'] == recipe_data.user_id:
+        user = User.get_by_id(session['user_id'])
+        return render_template('edit_recipe.html', recipe=recipe_data, user=user)
+    flash("You can't hack me","hacker")
+    return redirect('/')
+    # Pass the existing recipe data to the template
 
 # delete recipe
 @app.route('/recipes/delete/<int:recipe_id>')
