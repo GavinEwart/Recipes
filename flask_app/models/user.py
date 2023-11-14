@@ -27,44 +27,38 @@ class User:
 
 
     @staticmethod
-    def validate_user(user, confirm_password=None, data=None):
+    def validate_user(user, confirm_password=None):
         is_valid = True
         email = user.get('email')
         password = user.get('password')
 
         if not email or not password:
-            flash("Email and password are required", "login")
+            flash("Email and password are required", "register")
             is_valid = False
 
-        user_in_db = User.get_by_email({'email': email})
-        if not user_in_db or not bcrypt.check_password_hash(user_in_db.password, password):
-            flash("Invalid email/password", "login")
+        if User.email_exists(email):
+            flash("Email already exists", "register")
             is_valid = False
 
-        elif data:  # Check if this is a registration attempt
-            if 'first_name' not in user or len(user['first_name']) < 1:
-                flash("Missing first name", "register")
-                is_valid = False
+        if 'first_name' not in user or len(user['first_name']) < 1:
+            flash("Missing first name", "register")
+            is_valid = False
 
-            if 'last_name' not in user or len(user['last_name']) < 1:
-                flash("Missing last name", "register")
-                is_valid = False
+        if 'last_name' not in user or len(user['last_name']) < 1:
+            flash("Missing last name", "register")
+            is_valid = False
 
-            if 'email' not in user or not EMAIL_REGEX.match(user['email']):
-                flash("Invalid email address", "register")
-                is_valid = False
+        if 'email' not in user or not EMAIL_REGEX.match(user['email']):
+            flash("Invalid email address", "register")
+            is_valid = False
 
-            if 'email' in user and User.email_exists(user['email']):
-                flash("Email already exists", "register")
-                is_valid = False
+        if 'password' not in user or len(user['password']) < 8 or not any(char.isdigit() for char in user['password']) or not any(char.isupper() for char in user['password']):
+            flash("Password must be at least 8 characters long, contain at least 1 capital letter, and 1 number", "register")
+            is_valid = False
 
-            if 'password' not in user or len(user['password']) < 8 or not any(char.isdigit() for char in user['password']) or not any(char.isupper() for char in user['password']):
-                flash("Password must be at least 8 characters long, contain at least 1 capital letter, and 1 number", "register")
-                is_valid = False
-
-            if 'password' in user and user['password'] != confirm_password:
-                flash("Your password does not match", "register")
-                is_valid = False
+        if 'password' in user and user['password'] != confirm_password:
+            flash("Your password does not match", "register")
+            is_valid = False
 
         return is_valid
     

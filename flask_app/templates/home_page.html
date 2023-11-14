@@ -27,10 +27,21 @@
     
     <main class="container mt-4">
         <h2>Welcome, {{ user_in_db.first_name }}</h2>
-        {% with messages = get_flashed_messages(category_filter=['recipe']) %}
-            {% if "Successfully added recipe" in messages %}
+        {% with messages = get_flashed_messages(category_filter=['error']) %}
+            {% if messages %}
+                <div class="alert alert-danger" role="alert">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        {% with messages = get_flashed_messages(category_filter=['success']) %}
+            {% if messages %}
                 <div class="alert alert-success" role="alert">
-                    Successfully added recipe
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
                 </div>
             {% endif %}
         {% endwith %}

@@ -25,7 +25,7 @@ def create_recipe():
         return redirect('/recipes')
     else:
         flash("You must log in to access that", "login")
-        return redirect(url_for('welcome_page'))
+        return redirect('/')
 
 @app.route('/recipes/view/<int:recipe_id>')
 def view_recipe(recipe_id):
@@ -37,7 +37,7 @@ def view_recipe(recipe_id):
 # edit recipe
 @app.route('/recipes/edit/<int:recipe_id>', methods=['GET', 'POST'])
 def edit_recipe(recipe_id):
-    # Retrieve the recipe by ID from the database
+
     recipe_data = recipe.Recipe.get_recipe_by_user_id(recipe_id)
 
     # Check if the recipe exists
@@ -46,7 +46,7 @@ def edit_recipe(recipe_id):
         return redirect(url_for('homepage'))
 
     if request.method == 'POST':
-        # Update the recipe with the new data
+
         updated_data = {
             'name': request.form['recipe_name'],
             'description': request.form['recipe_description'],
@@ -55,14 +55,16 @@ def edit_recipe(recipe_id):
             'date_made': request.form['date_made']
         }
 
-        recipe.Recipe.update_recipe(recipe_id, updated_data)
+        print(f"Updating recipe with ID: {recipe_data.recipes_table_id}, Data: {updated_data}")
+
+        recipe.Recipe.update_recipe(recipe_data.recipes_table_id, updated_data)
         flash("Recipe updated successfully", "success")
         return redirect(url_for('homepage'))
     
     if session['user_id'] == recipe_data.user_id:
         user = User.get_by_id(session['user_id'])
         return render_template('edit_recipe.html', recipe=recipe_data, user=user)
-    flash("You can't hack me","hacker")
+    flash("You thought I didn't protect against that?", "hacker")
     return redirect('/')
     # Pass the existing recipe data to the template
 
@@ -77,7 +79,12 @@ def delete_recipe(recipe_id):
         flash("Recipe not found", "error")
         return redirect(url_for('homepage'))
 
-    # Delete the recipe from the database
-    recipe.Recipe.delete_recipe(recipe_id)
-    flash("Recipe deleted successfully", "success")
-    return redirect(url_for('homepage'))
+    # Check if the current user is the owner of the recipe
+    if session['user_id'] == recipe_data.user_id:
+        # Delete the recipe from the database
+        recipe.Recipe.delete_recipe(recipe_data.recipes_table_id)
+        flash("Recipe deleted successfully", "success")
+        return redirect(url_for('homepage'))
+    else:
+        flash("You thought I didn't protect against that?", "hacker")
+        return redirect('/')

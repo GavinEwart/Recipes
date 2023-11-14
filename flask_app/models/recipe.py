@@ -32,7 +32,7 @@ class Recipe:
     def get_recipe_by_id(cls, recipe_id):
         query = """
             SELECT * FROM recipes
-            WHERE id = %(recipe_id)s
+            WHERE recipes_table_id = %(recipe_id)s
             LIMIT 1;
         """
         result = connectToMySQL(cls.db).query_db(query, {'recipe_id': recipe_id})
@@ -58,7 +58,7 @@ class Recipe:
             UPDATE recipes
             SET name = %(name)s, description = %(description)s, instructions = %(instructions)s,
                 under_30 = %(under_30)s, date_made = %(date_made)s
-            WHERE id = %(recipe_id)s;
+            WHERE recipes_table_id = %(recipe_id)s;  # Change this line
         """
         data['recipe_id'] = recipe_id
         connectToMySQL(cls.db).query_db(query, data)
@@ -67,7 +67,7 @@ class Recipe:
     def delete_recipe(cls, recipe_id):
         query = """
             DELETE FROM recipes
-            WHERE id = %(recipe_id)s;
+            WHERE recipes_table_id = %(recipe_id)s;
         """
         connectToMySQL(cls.db).query_db(query, {'recipe_id': recipe_id})
 

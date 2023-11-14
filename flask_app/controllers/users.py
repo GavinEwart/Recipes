@@ -34,10 +34,11 @@ def login():
             return redirect('/recipes')
         else:
             flash("Invalid email/password", "login")
-            return redirect(url_for('welcome_page'))
+            return redirect('/')
     else:
         flash("Invalid form data", "login")
-        return redirect(url_for('welcome_page'))
+        print(flash)
+        return redirect('/')
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -50,12 +51,12 @@ def register():
 
     confirm_password = request.form['confirm_password']
 
-    if user.User.validate_user(user_data, confirm_password, user_data):
+    if user.User.validate_user(user_data, confirm_password):
         user.User.create_user(user_data, confirm_password)
-        flash("Account Created")
+        flash("Account Created", "success")
         return redirect('/')
-    else: 
-        flash("Invalid registration data")
+    else:
+        flash("Invalid registration data", "register")
         return redirect('/')
     
 @app.route('/logout')

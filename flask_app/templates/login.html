@@ -13,9 +13,9 @@
 <body>
     <h1 class="mb-5 mx-auto text-center text-purple">Recipe Share</h1>
     {% with messages = get_flashed_messages(category_filter=['hacker']) %}
-        {% if "You can't hack me" in messages %}
+        {% if "You thought I didn't protect against that?" in messages %}
             <div class="alert alert-danger" role="alert">
-                You can't hack me
+                You thought I didn't protect against that?
             </div>
         {% endif %}
     {% endwith %}
@@ -24,10 +24,12 @@
             <div class="row">
                 <div class="col-md-6 bg-dark text-light">
                     <h2>Login</h2>
-                    {% with messages = get_flashed_messages(category_filter=['login']) %}
-                        {% if "Invalid Email/Password" in messages %}
+                    {% with messages = get_flashed_messages(category_filter=['login', 'hacker']) %}
+                        {% if messages %}
                             <div class="alert alert-danger" role="alert">
-                                Invalid Email/Password
+                                {% for message in messages %}
+                                    {{ message }}
+                                {% endfor %}
                             </div>
                         {% endif %}
                     {% endwith %}
@@ -47,15 +49,20 @@
                 </div>
                 <div class="col-md-6 bg-dark text-light">
                     <h2>Register</h2>
-                    {% with messages = get_flashed_messages(category_filter=['register']) %}
-                        {% if "Account Created" in messages %}
+                    {% with messages = get_flashed_messages(category_filter=['success']) %}
+                        {% if messages %}
                             <div class="alert alert-success" role="alert">
-                                Account Created
+                                {% for message in messages %}
+                                    {{ message }}
+                                {% endfor %}
                             </div>
-                        {% elif messages %}
+                        {% endif %}
+                    {% endwith %}
+                    {% with messages = get_flashed_messages(category_filter=['register']) %}
+                        {% if messages %}
                             <div class="alert alert-danger" role="alert">
                                 {% for message in messages %}
-                                        {{ message }}<br>
+                                    {{ message }}
                                 {% endfor %}
                             </div>
                         {% endif %}
