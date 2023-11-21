@@ -7,7 +7,7 @@ Recipe Share is a web application that allows users to share and manage their fa
 ## Features
 
 - Create new recipes, including details such as name, description, instructions, and cook time.
-- View a list of all recipes, including information about the user who created each recipe.
+- View a list of all recipes, including information about the user who created each recipe..
 - Edit existing recipes to update their details.
 - Delete recipes that users no longer want to share.
 
